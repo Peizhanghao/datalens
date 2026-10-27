@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8fc">
+  <meta name="description" content="DataLens 是一款在浏览器本地处理 CSV 的轻量级实验数据分析与可视化工具。">
+  <title>DataLens — 实验数据分析工作台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js" onerror="window.chartLoadFailed=true"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="DataLens 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Data<span class="brand-light">Lens</span></span></a>
+      <div class="topbar-right"><span class="privacy-badge"><span class="privacy-dot"></span>本地处理 · 数据不上传</span><span class="top-divider"></span><span class="version-label">实验数据工作台</span></div>
+    </header>
+
+    <main id="top">
+      <section class="hero"><div><div class="eyebrow"><span class="eyebrow-line"></span>实验数据分析工具 <span class="eyebrow-version">v1.0</span></div><h1>让每一组数据，<span class="hero-accent">都清晰可见。</span></h1><p class="hero-copy">导入实验数据，即刻获得统计摘要、交互图表与可导出的分析结果。所有计算均在你的浏览器中完成。</p></div><div class="hero-actions"><button class="button button-primary" id="load-sample"><span class="button-icon">✳</span>加载示例数据</button><button class="button button-secondary" id="choose-file">上传 CSV <span class="button-arrow">↗</span></button></div></section>
+
+      <section class="upload-panel" id="dropzone" aria-label="CSV 上传区域" tabindex="0"><input id="file-input" type="file" accept=".csv,text/csv" hidden><div class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="upload-content"><strong>拖放 CSV 文件到这里</strong><span>或者 <button class="inline-button" id="browse-file">浏览文件</button> · 支持 UTF-8 / UTF-8 BOM 编码</span></div><span class="upload-format">.CSV</span></section>
+      <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
+
+      <section class="workspace" id="workspace" hidden>
+        <div class="section-heading"><div><div class="section-kicker">OVERVIEW <span class="heading-slash">/</span> <span id="dataset-caption">数据概览</span></div><h2>统计摘要</h2></div><div class="dataset-meta"><span class="live-dot"></span><span id="dataset-name">—</span><span class="meta-divider"></span><span id="row-count">0 行</span></div></div>
+        <div class="stats-grid" id="stats-grid"></div>
+
+        <div class="analysis-grid">
+          <section class="panel chart-panel"><div class="panel-heading"><div><div class="section-kicker">VISUALIZATION</div><h2>数据趋势</h2></div><div class="chart-controls"><label><span>X</span><select id="x-select" aria-label="选择横坐标列"></select></label><label><span>Y</span><select id="y-select" aria-label="选择纵坐标列"></select></label><div class="segmented" role="group" aria-label="图表类型"><button class="segment active" data-chart="line" aria-pressed="true">折线</button><button class="segment" data-chart="bar" aria-pressed="false">柱状</button></div></div></div><div class="chart-wrap" id="chart-wrap"><canvas id="data-chart" aria-label="数据趋势图" role="img"></canvas><div class="chart-fallback" id="chart-fallback" hidden><div class="fallback-icon">↗</div><strong>图表库暂时不可用</strong><span>统计与数据表格仍可正常使用。请检查网络连接后刷新页面，或使用下方 CSV 导出功能。</span></div><div class="chart-empty" id="chart-empty" hidden>所选列没有可绘制的数据点，请尝试其他坐标列。</div></div><div class="chart-footnote"><span><i class="legend-dot"></i><span id="chart-legend">数据系列</span></span><span id="chart-point-count">0 个数据点</span></div></section>
+          <aside class="panel column-panel"><div class="panel-heading"><div><div class="section-kicker">DATA COLUMNS</div><h2>数值列</h2></div><span class="column-count" id="column-count">0</span></div><p class="panel-description">选择一列作为分析对象，统计卡片将同步更新。</p><div class="column-list" id="column-list"></div></aside>
+        </div>
+
+        <section class="panel table-panel"><div class="panel-heading"><div><div class="section-kicker">RAW DATA</div><h2>数据明细 <span class="table-total" id="table-total"></span></h2></div><div class="table-actions"><span class="table-page-label" id="page-label">第 1 页</span><button class="button button-small" id="export-data">导出数据 CSV <span>↓</span></button><button class="button button-small button-outline" id="export-summary">导出统计摘要 <span>↓</span></button></div></div><div class="table-scroll"><table id="data-table"><thead></thead><tbody></tbody></table><div class="table-empty" id="table-empty" hidden>当前没有可显示的数据。</div></div><div class="table-footer"><span id="showing-label">显示 0 行</span><div class="pagination"><button id="prev-page" aria-label="上一页" disabled>←</button><button id="next-page" aria-label="下一页" disabled>→</button></div></div></section>
+      </section>
+
+      <section class="empty-state" id="empty-state"><div class="empty-illustration" aria-hidden="true"><div class="empty-axis axis-x"></div><div class="empty-axis axis-y"></div><div class="empty-chart-line"></div><span class="empty-point point-a"></span><span class="empty-point point-b"></span><span class="empty-point point-c"></span><span class="empty-point point-d"></span></div><h2>你的分析工作台已就绪</h2><p>加载一份示例数据，或上传自己的 CSV 文件<br>开始探索实验数据中的规律。</p><button class="button button-primary" id="empty-sample">试试示例数据 <span class="button-arrow">→</span></button><div class="empty-hint"><span>⌘</span> 支持逗号分隔的 CSV 文件</div></section>
+    </main>
+    <footer class="footer"><div class="footer-brand"><span class="brand-mark brand-mark-small"><i></i><i></i><i></i></span><span>DataLens</span><span class="footer-divider">·</span><span>实验数据可视化分析工具</span></div><div class="footer-right"><span>你的数据仅在本地处理</span><span class="footer-divider">·</span><span>HTML · CSS · JavaScript · Chart.js</span></div></footer>
+  </div>
+</body>
+</html>
