@@ -88,7 +88,7 @@ Chart.js 和 Google Fonts 从第三方 CDN 加载静态资源。CSV 文件内容
 项目核心逻辑有 Node.js 自动化测试，覆盖统计计算、边界情况、CSV 解析和导出安全处理。浏览器中的文件选择、拖放、真实文件下载、图表交互和手机端视觉布局需要另外手工检查。具体记录见 [tests.md](tests.md)。
 许可
 本项目使用 MIT License，详见 LICENSE。
-<a id="english"></a>
+
 English
 DataLens is a lightweight CSV analysis and visualization tool for university lab work. Built with vanilla HTML, CSS, and JavaScript, it parses CSV files, computes descriptive statistics, renders interactive charts, displays paginated records, and exports CSV results in the browser.
 No account, backend, or database is required. CSV data is processed locally by the browser and is not uploaded by DataLens.
